@@ -6,6 +6,29 @@ import InputBox from "components/Inputbox";
 
 type AuthPage = 'sign-in' | 'sign-up';
 
+interface SnsContainerProps {
+    title: string;
+}
+
+function SnsContainer ({ title }: SnsContainerProps) {
+
+    const onSnsButtonClickHandler = (type: 'kakao' | 'naver') => {
+        if(type === 'kakao') window.location.href = 'https://developers.kakao.com/';
+        if(type === 'naver') window.location.href = 'https://developers.naver.com/';
+    };
+
+
+    return (
+        <div className="authentication-sns-container">
+            <div className="sns-container-title label">{title}</div>
+            <div className="sns-button-container">
+                <div className="sns-button kakao-button" onClick={() => onSnsButtonClickHandler('kakao')}></div>
+                <div className="sns-button naver-button" onClick={() =>onSnsButtonClickHandler('naver')}></div>
+            </div>
+        </div>
+    );
+}
+
 interface Props {
     onLinkClickHandler: () => void
 }
@@ -39,26 +62,36 @@ function SignIn ({ onLinkClickHandler } : Props) {
                 <div className="text-link" onClick={onLinkClickHandler}>회원가입</div>
             </div>
             <div className="short-divider"></div>
-            <div className="authentication-sns-container">
-                <div className="sns-container-title label">SNS 로그인</div>
-                        <div className="sns-button-container">
-                            <div id="kakao-button" className="sns-button kakao-button"></div>
-                            <div id="naver-button" className="sns-button naver-button"></div>
-            </div>
+            <SnsContainer title="SNS 로그인" />
         </div>
     );
 }
 
 function SignUp ({ onLinkClickHandler } : Props) {
 
+    const [id, setId] = useState<string>('');
+    const [idButtonStatus, setIdButtonStatus] = useState<boolean>(false);
+    const [password, setPassword] = useState<string>('');
+
+    const onIdChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        const {value} = event.target;
+        setId(value);
+        setIdButtonStatus(value !== '');
+    };
+    const onPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
+        setPassword(event.target.value);
+    };
+
     const onSignInButtonClickHandler = () => {};
 
 
     return(
         <div className="authentication-contents">
-            <div className="authentication-sns-container"></div>
+            <SnsContainer title="SNS 회원가입" />
             <div className="short-divider"></div>
-            <div className="authentication-input-container"></div>
+            <div className="authentication-input-container">
+                <InputBox label="아이디" type="text" value= {id} placeholder="아이디를 입력해주세요" onChangeHandler={onIdChangeHandler} buttonTitle="중복 확인" idButtonStatus= {idButtonStatus}/>
+            </div>
             <div className="authentication-button-container">
                 <div className="primary-button full-width" onClick={onSignInButtonClickHandler}>회원가입</div>
                 <div className="text-link" onClick={onLinkClickHandler}>로그인</div>

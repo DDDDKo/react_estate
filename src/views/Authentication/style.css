@@ -66,3 +66,11 @@
     gap: 16px;
 }
 
+.kakao-button {
+    background-image: url('../../assets/image/kakao-button.png');
+}
+
+.naver-button{
+    background-image: url('../../assets/image/naver-button.png');
+}
+
