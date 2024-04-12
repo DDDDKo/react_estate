@@ -41,18 +41,31 @@ function SignIn ({ onLinkClickHandler } : Props) {
     const [id, setId] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
+    const [message, setMessage] = useState<string>('');
+
     //          event handler           //
     const onIdChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         setId(event.target.value);
+        setMessage('');
     };
     const onPasswordChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         setPassword(event.target.value);
+        setMessage('');
     };
     
     const onSignInButtonClickHandler = () => {
-        alert(`아이디 : ${id} / 비밀번호 : ${password}`)
-        setId('');
-        setPassword('');
+        const ID = 'service123';
+        const PASSWORD = 'qwer1234';
+
+        const isSuccess = id === ID && password === PASSWORD;
+        if (isSuccess) {
+            setId('');
+            setPassword('');
+            alert('로그인 성공!');
+        }
+        else {
+            setMessage('로그인 정보가 일치하지 않습니다.');
+        }
     };
 
     //              render              //
@@ -60,7 +73,7 @@ function SignIn ({ onLinkClickHandler } : Props) {
         <div className="authentication-contents">
             <div className="authentication-input-container">
                 <InputBox label="아이디" type="text" value={id} placeholder="아이디를 입력해주세요" onChangeHandler={onIdChangeHandler} />
-                <InputBox label="비밀번호" type="password" value={password} placeholder="비밀번호를 입력해주세요" onChangeHandler={onPasswordChangeHandler}/>
+                <InputBox label="비밀번호" type="password" value={password} placeholder="비밀번호를 입력해주세요" onChangeHandler={onPasswordChangeHandler} message={message} error/>
             </div>
             <div className="authentication-button-container">
                 <div className="primary-button full-width" onClick={onSignInButtonClickHandler}>로그인</div>
@@ -87,10 +100,12 @@ function SignUp ({ onLinkClickHandler } : Props) {
     const [authNumberButtonStatus, setAuthNumberButtonStatus] = useState<boolean>(false);
 
     const [isIdCheck, setIdCheck] = useState<boolean>(false);
+    const [isPasswordPattern, setPasswordPattern] = useState<boolean>(false);
+    const [isEqualPassword, setEqualPassword] = useState<boolean>(false);
     const [isEmailCheck, setEmailCheck] = useState<boolean>(false);
     const [isAuthNumberCheck, setAuthNumberCheck] = useState<boolean>(false);
 
-    const isSignUpActive = isIdCheck && isEmailCheck && isAuthNumberCheck && password && passwordCheck;
+    const isSignUpActive = isIdCheck && isEmailCheck && isAuthNumberCheck && isPasswordPattern && isEqualPassword;
     const signUpButtonClass = isSignUpActive ? 'primary-button full-width' : 'disable-button full-width'
 
     const [idMessage, setIdMessage] = useState<string>('');
@@ -118,9 +133,11 @@ function SignUp ({ onLinkClickHandler } : Props) {
         const isPasswordPattern = passwrodPattern.test(value);
         const passwordMessage =
         isPasswordPattern ? '' : value ? '영문,숫자를 혼용하여 8~13자 입력해주세요' : '';
+        setPasswordPattern(isPasswordPattern);
         setPasswordMessage(passwordMessage);
         
         const isEqualPassword = passwordCheck === value;
+        setEqualPassword(isEqualPassword);
         const passwordCheckMessage = 
         isEqualPassword ? '' :
         passwordCheck ?  '비밀번호가 일치하지 않습니다' : '' ;
@@ -130,7 +147,10 @@ function SignUp ({ onLinkClickHandler } : Props) {
     const onPasswordCheckChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
         const {value} = event.target;
         setPasswordCheck(value);
+
         const isEqualPassword = password === value;
+        setEqualPassword(isEqualPassword);
+
         const passwordCheckMessage = 
         isEqualPassword ? '' : 
         value ? '비밀번호가 일치하지 않습니다' : '';
@@ -144,6 +164,9 @@ function SignUp ({ onLinkClickHandler } : Props) {
         setEmailCheck(false);
         setAuthNumberCheck(false);
         setEmailMessage('');
+        
+        setAuthNumber('');
+        setAuthNumberMessage('');
     };
 
     const onAuthNumberChangeHandler = (event: ChangeEvent<HTMLInputElement>) => {
@@ -179,6 +202,7 @@ function SignUp ({ onLinkClickHandler } : Props) {
 
     const onAuthNumberButtonClickHandler = () => {
         if(!authNumberButtonStatus) return;
+
         const authNumberCheck = authNumber === '1234';
         setAuthNumberCheck(authNumberCheck);
         setAuthNumberError(!authNumberCheck);
